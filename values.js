@@ -90,6 +90,8 @@ const square = function(x){
 	return x * x;
 };
 
+// 為了方法參數建立的 binding 或是在方法內宣告的 binging 只能在該方法內被參考，此稱為 local bindings
+
 // 每個 function 呼叫會建一個新的 binding，呼叫同個方法不同次都會是一個新的 instance
 
 // 用 const 或 let 宣告的 binding，scope 存在於 block 中 
@@ -164,5 +166,13 @@ console.log(square5(4, 3)); // 12
 
 // CLOSURE
 
-
+function wrapValue(n) {
+    let local = n;
+    return () => local;
+  }
+  
+  let wrap1 = wrapValue(1);
+  let wrap2 = wrapValue(2);
+  console.log(wrap1());  // → 1
+  console.log(wrap2());  // → 2
 
