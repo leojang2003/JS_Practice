@@ -256,3 +256,8 @@ myInnerFunc();
 // 為什麼需要 Closure ? 
 // When you use closures for data privacy, the enclosed variables are only in scope within the containing (outer) function. You can’t get at the data from an outside scope except through the object’s privileged methods.
 // 主要是為了資料隱私性，無法從 scope 之外存取資料，除非透過該物件的特權方法
+
+// 什麼是 Pure Function ?
+// A pure function is a specific kind of value-producing function that not only has no side effects but also doesn’t rely on side effects from other code—for example, it doesn’t read global bindings whose value might change. A pure function has the pleasant property that, when called with the same arguments, it always produces the same value (and doesn’t do anything else).
+// 一個純淨方法指的是一種特別的產生值的方法，不會產生副作用，也不會依賴其他程式產生的副作用。
+// 舉例來說，不使用全域變數。當傳入同樣的參數時，永遠回傳同樣的值
