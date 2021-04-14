@@ -89,6 +89,7 @@ console.log(Math.min(2,4) + 100);
 const square = function(x){
 	return x * x;
 };
+// JavaScript 中，scope 是由 function 或是 code block 建立 
 
 // 為了方法參數建立的 binding 或是在方法內宣告的 binging 只能在該方法內被參考，此稱為 local bindings
 
@@ -106,9 +107,17 @@ if (true) {
   // → 60
 }
 
-// 在此無法存取 y
+// 在此無法存取 y，y 屬於 if block 建立的 scope
 console.log(x + z); // → 40
 
+function foo() {
+  // The function scope
+  let count = 0;
+  console.log(count); // logs 0
+}
+
+foo();
+console.log(count); // 在此無法存取 count 屬於 foo() 方法建立的 scope
 
 var caller = function(){
 	var x1 = 3;
@@ -120,7 +129,41 @@ var caller = function(){
 // 每個 scope 都可以看見 global scope
 // 此稱為 Lexical Scoping
 
-// function value
+// Lexical scoping means that the accessibility of variables is determined by the position of the variables inside the nested scopes.
+// 語彙範疇的意思是變數的可存取性是由變數在巢狀範疇的位置所決定
+
+// Simpler, the lexical scoping means that inside the inner scope you can access variables of outer scopes.
+// 簡單來說，在內層範疇中，程式可以存取外層範疇的變數
+
+const myGlobal = 0;
+
+function func() {
+  const myVar = 1;
+  console.log(myGlobal); // logs "0"
+
+  function innerOfFunc() {
+    const myInnerVar = 2;
+    console.log(myVar, myGlobal); // logs "1 0"
+
+    function innerOfInnerOfFunc() {
+      console.log(myInnerVar, myVar, myGlobal); // logs "2 1 0"
+    }
+
+    innerOfInnerOfFunc();
+  }
+
+  innerOfFunc();
+}
+
+func();
+
+// innerOfInnerOfFunc() 的 lexical scope 包含 innerOfFunc()，func()和 global scope。
+// 在 innerOfInnerOfFunc()中，可以存取 lexical scope 變數 myInnerVar、myVar、myGlobal。
+
+// 最後，func()的 lexical scope 僅包含 global scope。在func()中，可以存取 lexical scope 變數 myGlobal。
+
+
+// Function As Value
 // 可以做到其他 value 一樣，而不僅止於呼叫
 let bose = function(para){
 	console.log(para + " success");
@@ -164,15 +207,41 @@ function square5(x, y = 2) { return x * y; }
 console.log(square5(4));  // 8
 console.log(square5(4, 3)); // 12
 
-// CLOSURE
+// CLOSURE 概念
+// https://dmitripavlutin.com/simple-explanation-of-javascript-closures/#comments
+// 在 innerFunc() 的 scope 中, 變數 outerVar 可以從 lexical scope 中存取
+// innerFunc() 呼叫的時候是在 outerFunc() 的 scope 之內，所以是正確的
 
-function wrapValue(n) {
-    let local = n;
-    return () => local;
+function outerFunc() {
+  let outerVar = 'I am outside!';
+
+  function innerFunc() {
+    console.log(outerVar); // => logs "I am outside!"
   }
-  
-  let wrap1 = wrapValue(1);
-  let wrap2 = wrapValue(2);
-  console.log(wrap1());  // → 1
-  console.log(wrap2());  // → 2
 
+  innerFunc();
+}
+
+outerFunc();
+
+
+// 當 innerFunc() 呼叫的時候不在 outerFunc() 的 scope 之中，innerFunc() 仍舊可以從 lexical scope 中存取
+// outerVar 變數，即便是在 lexical scope 的外面，換句話說 innerFunc() closes over(capture, remember) 他的 lexical scope 中的變數 outVar
+
+// The closure is a function that accesses its lexical scope even executed outside of its lexical scope.
+// Closure 就是一個方法，即使是在他的 lexical scope 之外執行，仍舊可以存取他的 lexical scope
+
+function outerFunc() {
+  let outerVar = 'I am outside!';
+
+  function innerFunc() {
+    console.log(outerVar); // => logs "I am outside!"
+  }
+
+  return innerFunc;
+}
+
+const myInnerFunc = outerFunc();
+myInnerFunc();
+
+// 簡單來說，closure 記得定義當下的變數，不論何時呼叫
