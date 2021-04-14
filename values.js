@@ -117,7 +117,7 @@ function foo() {
 }
 
 foo();
-console.log(count); // 在此無法存取 count 屬於 foo() 方法建立的 scope
+// console.log(count); // 在此無法存取 count 屬於 foo() 方法建立的 scope
 
 var caller = function(){
 	var x1 = 3;
@@ -261,3 +261,55 @@ myInnerFunc();
 // A pure function is a specific kind of value-producing function that not only has no side effects but also doesn’t rely on side effects from other code—for example, it doesn’t read global bindings whose value might change. A pure function has the pleasant property that, when called with the same arguments, it always produces the same value (and doesn’t do anything else).
 // 一個純淨方法指的是一種特別的產生值的方法，不會產生副作用，也不會依賴其他程式產生的副作用。
 // 舉例來說，不使用全域變數。當傳入同樣的參數時，永遠回傳同樣的值
+
+// *****************************
+// Chapter 4. Objects & Arrays
+// *****************************
+
+// 在 JavaScript 中存取屬性(property)有兩種方式，value.x跟value[x]，value[x]會試著評估 expression x 並將結果轉為字串作為屬性名稱
+
+// 屬性名稱為字串，所以可以是任何字串，但.僅能適用如正常的 binding 名稱，所以如果要存取屬性名稱像是 2 或是 John Doe， 則只能用 value[2] 或是 value ["John Doe"]
+
+// 陣列的元素是儲存成陣列的屬性，使用數字做為屬性名稱，因數字無法以.存取，所以用[]存取
+
+// 包含方法 (function) 的屬性通常稱為該 value 的 methods，如同 "toUpperCase 是 string 的 method"
+
+// array 有 push() 跟 pop() 方法
+
+// Values of the type object are arbitrary collections of properties. 
+// 物件型別的值為任意屬性的集合
+// 使用大括號建立物件，由逗號隔開屬性
+
+let day1 = {
+    squirrel: false,
+    events: ["work", "touched tree", "pizza", "running"]
+  };
+
+// Properties whose names aren’t valid binding names or valid numbers have to be quoted.
+// 屬性名稱非有效的 binding name 時須加上括號
+
+let descriptions = {
+    work: "Went to work",
+    "touched tree": "Touched a tree"
+  };
+
+// 物件的 delete 方法可以移除屬性
+// delete anObject.left; // 移除屬性
+let father = {name: 'Tom'};
+let years = 18
+let son = {dad: father, age: years};
+
+father.name =  'Chris'
+years = 9
+console.log(son.dad); // {name : 'Chris'} 因為屬性的 value 值已經變更了
+console.log(son.age); // 18，不像 son.dad 會變更
+
+console.log("dad" in son); // 檢查是否有屬性
+console.log("age" in son); // → true
+
+// 取得物件的屬性陣列可以用 Object.keys()
+console.log(Object.keys({x: 0, y: 0}));// → ["x", "y"]
+
+// 複製所有屬性至另一個物件
+let objectA = {a: 1, b: 2};
+Object.assign(objectA, {b: 3, c: 4});
