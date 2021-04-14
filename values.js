@@ -212,6 +212,13 @@ console.log(square5(4, 3)); // 12
 // 在 innerFunc() 的 scope 中, 變數 outerVar 可以從 lexical scope 中存取
 // innerFunc() 呼叫的時候是在 outerFunc() 的 scope 之內，所以是正確的
 
+// To use a closure, define a function inside another function and expose it. To expose a function, return it or pass it to anot//her function.
+// The inner function will have access to the variables in the outer function scope, even after the outer function has returned.
+// 要使用 Closure，在一個方法中定義一個內部方法並回傳出來
+// 內部方法可以存取外部方法 scope 中的變數，即便外部方法已經回傳
+
+
+
 function outerFunc() {
   let outerVar = 'I am outside!';
 
@@ -245,3 +252,7 @@ const myInnerFunc = outerFunc();
 myInnerFunc();
 
 // 簡單來說，closure 記得定義當下的變數，不論何時呼叫
+
+// 為什麼需要 Closure ? 
+// When you use closures for data privacy, the enclosed variables are only in scope within the containing (outer) function. You can’t get at the data from an outside scope except through the object’s privileged methods.
+// 主要是為了資料隱私性，無法從 scope 之外存取資料，除非透過該物件的特權方法
