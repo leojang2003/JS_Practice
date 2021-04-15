@@ -296,13 +296,13 @@ let descriptions = {
 // 物件的 delete 方法可以移除屬性
 // delete anObject.left; // 移除屬性
 let father = {name: 'Tom'};
-let years = 18
+let years = 18 // gets you a reference to the immutable 18
 let son = {dad: father, age: years};
 
 father.name =  'Chris'
-years = 9
-console.log(son.dad); // {name : 'Chris'} 因為屬性的 value 值已經變更了
-console.log(son.age); // 18，不像 son.dad 會變更
+years = 9 // assign a new reference to the immutable 9
+console.log('son.dad' + son.dad); // {name : 'Chris'} 因為屬性的 value 值已經變更了
+console.log(son.age); // 18，因為 number 為 immutable
 
 console.log("dad" in son); // 檢查是否有屬性
 console.log("age" in son); // → true
@@ -313,3 +313,94 @@ console.log(Object.keys({x: 0, y: 0}));// → ["x", "y"]
 // 複製所有屬性至另一個物件
 let objectA = {a: 1, b: 2};
 Object.assign(objectA, {b: 3, c: 4});
+
+// numbers, strings, and Booleans, are all immutable
+// 數字、字串、布林值為不可改變的
+
+// The numbers themselves are immutable. The references to them that are stored in the variable are not.
+// 數字本身為不可改變的，但變數儲存數字的參考是可以改變的
+
+let object1 = {value: 10};
+let object2 = object1;
+let object3 = {value: 10};
+
+console.log(object1 == object2);// → true
+console.log(object1 == object3);// → false
+
+object1.value = 15;
+console.log(object2.value);// → 15
+console.log(object3.value);// → 10
+
+
+let journal = [];
+
+// push 到陣列的物件不像一般的物件有冒號 events : events
+// 傳進來的 events 就變成屬性名稱，value 就是傳進來的 event
+function addEntry(events, squirrel) {
+  journal.push({events, squirrel});
+}
+
+addEntry(["work", "touched tree", "pizza", "running",
+          "television"], false);
+		  
+console.log(journal);		  
+
+// Loop Array - Modern JavaScript 寫法
+for(let entry of journal)
+{
+	console.log(`${entry.events.length} events.`);
+}
+
+journal[0].events.shift(); // 從陣列開始移除元素
+console.log(journal[0].events); //["touched tree", "pizza", "running", "television"]
+journal[0].events.unshift('trader'); // 從陣列開始增加元素
+console.log(journal[0].events); //["touched tree", "pizza", "running", "television"]
+
+console.log([1, 2, 3, 2, 1].indexOf(3));
+console.log([1, 2, 3, 2, 1].lastIndexOf(-1));
+
+// 另一個基本的陣列方法是 slice()，它採用開始索引和結束索引，並返回僅包含元素之間的陣列。含起始索引，不含結束索引。
+console.log([0, 1, 2, 3, 4].slice(2, 4));// → [2, 3]
+console.log([0, 1, 2, 3, 4].slice(2));// → [2, 3, 4]
+console.log([0, 1, 2, 3, 4].slice());// → [0, 1 2, 3, 4]
+
+// 字串也有 slice 和 indexOf
+console.log("coconutss".slice(4, 7));// → nut
+console.log("coconut".indexOf("con"));// 可搜尋
+
+// trim() 方法從字符串的開頭和結尾刪除空格（空格，換行符號，tab）
+
+console.log(String(6).padStart(1, "0"));// → 006
+
+
+let sentence = "Secretarybirds specialize in stomping";
+let words = sentence.split(" ");
+console.log(words); // → ["Secretarybirds", "specialize", "in", "stomping"]
+console.log(words.join(". ")); // → Secretarybirds. specialize. in. stomping
+console.log("LA".repeat(3));// → LALALA
+
+// Rest Parameters
+// rest 參數會被組合成一個陣列。如果前面還有其他參數，則它們的值不屬於該陣列。
+
+function max(tmp, ...numbers) {
+  console.log(numbers);
+  let result = -Infinity;
+  for (let number of numbers) {
+    if (number > result) result = number;
+  }
+  return result;
+}
+console.log(max(4, 1, 9, -2));// → 9
+
+let numbers = [5, 1, 7];
+console.log(max(...numbers));
+// → 7
+
+// 可以使用類似的...符號來呼叫有陣列參數的方法。
+// 這會將陣列展開，將其元素作為單獨的參數傳遞來呼叫方法。
+function max_t(t1, t2) {
+    
+  return Math.max(t1,t2);
+}
+
+console.log(max_t(...numbers));
