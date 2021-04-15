@@ -404,3 +404,29 @@ function max_t(t1, t2) {
 }
 
 console.log(max_t(...numbers));
+
+// Destructuring 解構 
+// 如果我們知道參數為陣列，我們可以直接拆開成元素
+function spread([n1,n2,n3,n4])
+{
+    return n1;
+}
+
+console.log(spread(['Tom', 'Bob', 'John']));
+
+// 大括號可以看物件裡面
+let {name, age} = {name: "Faraji", age: 23};
+console.log(age); // 23
+console.log(name); // Faraji
+
+function spread([n1,n2,n3,n4])
+{
+    return n1;
+}
+
+// JSON
+// 屬性名稱要用雙引號
+let string = JSON.stringify({squirrel: false,
+    events: ["weekend"]});
+console.log(string);// → {"squirrel":false,"events":["weekend"]}
+console.log(JSON.parse(string).events);// → ["weekend"]
