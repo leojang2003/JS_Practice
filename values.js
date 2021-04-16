@@ -1,6 +1,31 @@
 ('use strict');
 
-
+var SCRIPTS = [
+  {
+    name: "Adlam",
+    ranges: [[125184, 125259], [125264, 125274], [125278, 125280]],
+    direction: "rtl",
+    year: 1987,
+    living: true,
+    link: "https://en.wikipedia.org/wiki/Fula_alphabets#Adlam_alphabet"
+  },
+  {
+    name: "Caucasian Albanian",
+    ranges: [[66864, 66916], [66927, 66928]],
+    direction: "ltr",
+    year: 420,
+    living: false,
+    link: "https://en.wikipedia.org/wiki/Caucasian_Albanian_alphabet"
+  },
+  {
+    name: "Ahom",
+    ranges: [[71424, 71450], [71453, 71468], [71472, 71488]],
+    direction: "ltr",
+    year: 1250,
+    living: false,
+    link: "https://en.wikipedia.org/wiki/Ahom_alphabet"
+  }  
+];
 
 // *****************************
 // Chapter 1. Values
@@ -430,3 +455,168 @@ let string = JSON.stringify({squirrel: false,
     events: ["weekend"]});
 console.log(string);// → {"squirrel":false,"events":["weekend"]}
 console.log(JSON.parse(string).events);// → ["weekend"]
+
+
+
+// **********************************
+// Chapter 5. Higher Order Functions
+// **********************************
+
+// Higher-Order Functions
+// 通過將其他函數作為參數或通過將其回傳，稱為高階函數。
+
+function repeat(n, action) {
+  for (let i = 0; i < n; i++) {
+    action(i);
+  }
+}
+
+let labels = [];
+repeat(5, i => {
+  labels.push(`Unit ${i + 1}`);
+});
+console.log(labels);
+
+// 單行不用大括號
+repeat(5, i => labels.push(`Unit ${i + 1}`));
+console.log(labels);
+
+// filter() 方法
+// 注意filter() 是建立新陣列回傳，而不是從現有陣列中刪除元素
+// 回傳陣列長度可能會變短
+
+function filter(array, test) {
+  let passed = [];
+  for (let element of array) {
+    if (test(element)) {
+      passed.push(element);
+    }
+  }
+  return passed;
+}
+
+// map() 方法
+// map() 套用 function 到陣列的所有元素，並將轉換後的結果回傳
+// 回傳的陣列長度不變
+
+function map(array, transform) {
+  let mapped = [];
+  for (let element of array) {
+    mapped.push(transform(element));
+  }
+  return mapped;
+}
+
+let rtlScripts = SCRIPTS.filter(s => s.direction == "rtl");
+console.log(map(rtlScripts, s => s.name));
+console.log(filter(SCRIPTS, script => script.living));
+
+// reduce() 方法
+// reduce() 方法通過重複從陣列中取一個元素，與當前值組合加總，最後回傳一個數值。
+
+function reduce(array, combine, start) {
+  let current = start;
+  for (let element of array) {
+    current = combine(current, element);
+  }
+  return current;
+}
+
+console.log(reduce([1, 2, 3, 4], (a, b) => a + b, 0));// → 10
+
+// 標準的陣列方法 reduce()。如果您的陣列包含至少一個元素，則可以不使用start參數
+console.log([1, 2, 3, 4].reduce((a, b) => a + b));
+
+console.log(`reduce() test2 :  ${[1, 2, 3, 4].reduce((a, b) => a > b ? a : b)}`);
+
+// 使用兩次 reduce() 範例
+
+function characterCount(script) {
+  return script.ranges.reduce((count, [from, to]) => {
+    return count + (to - from);
+  }, 0);
+}
+
+console.log(SCRIPTS.reduce((a, b) => {
+  return characterCount(a) < characterCount(b) ? b : a;
+}));
+
+// Higher-order functions start to shine when you need to compose operations. 
+// Higher-order functions 真正的用途是在組合多種運算
+
+function average(array) {
+  return array.reduce((a, b) => a + b) / array.length;
+}
+
+console.log(Math.round(average(
+  SCRIPTS.filter(s => s.living).map(s => s.year))));
+// → 1165
+// 看起來很像 LINQ 的 WHERE 之後接 SELECT
+console.log(Math.round(average(
+  SCRIPTS.filter(s => !s.living).map(s => s.year))));
+// → 204
+
+// ******************
+
+// charCodeAt()、codePointAt()
+let horseShoe = "測試";
+
+console.log(horseShoe.length);
+// → 4
+console.log(horseShoe[0]);
+
+console.log(horseShoe.charCodeAt(0));
+// → 取得 UTF-16 Code Unit
+console.log(horseShoe.codePointAt(0));
+// → 取得 full Unicode character
+
+
+// *****************************
+// Chapter 5. Objects
+// *****************************
+
+
+
+// 通常在屬性名稱的開頭加上_符號，表示這些屬性是 private 的。
+// Methods are nothing more than properties that hold function values.
+// Methods 僅為接 function value 的屬性
+
+function speak(line) {
+  console.log(`The ${this.type} rabbit says '${line}'`);
+}
+let whiteRabbit = {type: "white", speak};
+let hungryRabbit = {type: "hungry", speak};
+
+whiteRabbit.speak("White"); // this 指向呼叫方法的物件 whiteRabbit
+hungryRabbit.speak("Hungry"); // this 指向呼叫方法的物件 hungryRabbit
+
+// You can think of this as an extra parameter that is passed in a different way. 
+// 換句話說，可以將 this 想成一個額外除傳入的參數
+
+// 如果需要明確的將 this 傳入方法，可以使用該方法的 call() method
+speak.call(hungryRabbit, "Burp!"); // hungryRabbit 為物件
+
+// Since each function has its own this binding, whose value depends on the way it is called
+// 每個方法都有自己的 this，其值視呼叫方式而定
+
+// you cannot refer to the this of the wrapping scope in a regular function defined with the function keyword.
+// 
+
+function speak2(line) {
+  console.log(`The ${this.type} rabbit says '${line}'`);
+}
+
+speak2('ts');
+
+// (MDN) Arrow functions establish "this" based on the scope the Arrow function is defined within.
+// Arrow functions 的 scope 是看當下定義的時候所在
+// this 不適合
+
+function normalize() {
+  console.log(this.coords.map(n => n / this.length));
+}
+normalize.call({coords: [0, 2, 3], length: 5});
+// → [0, 0.4, 0.6]
+
+
+
